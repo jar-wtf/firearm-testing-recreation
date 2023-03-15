@@ -8,7 +8,7 @@ extends Control
 var time_to_empty = 0
 var shoot_timer = 0
 var prev_bullet_time = 0
-@onready var rof = 0.1 		# 1 / (rpm / 60)
+@onready var rof: float = 1 / (rpm / 60.0)
 
 signal fire_ready
 
