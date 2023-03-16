@@ -10,11 +10,13 @@ var shoot_timer = 0
 var prev_bullet_time = 0
 @onready var rof: float = 1 / (rpm / 60.0)
 
-signal fire_ready
+func _process(_delta):
+	if Input.is_action_pressed("fire") && full_auto:
+		shoot()
 
 
 func _input(event):
-	if event.is_action_pressed("fire"):
+	if event.is_action_pressed("fire") && !full_auto:
 		shoot()
 	if event.is_action_pressed("reload"):
 		reload()
@@ -22,8 +24,6 @@ func _input(event):
 
 func _physics_process(delta):
 	shoot_timer += delta
-	if shoot_timer >= (prev_bullet_time + rof):
-		fire_ready.emit()
 	if (Input.is_action_pressed("fire") && bullets > 0):
 		time_to_empty += delta
 	update_ui()
@@ -35,9 +35,6 @@ func shoot():
 	
 	prev_bullet_time = shoot_timer
 	bullets -= 1
-	await fire_ready
-	if full_auto && Input.is_action_pressed("fire"):
-		shoot()
 
 
 func reload():
@@ -48,3 +45,4 @@ func reload():
 func update_ui():
 	$BulletsLeft.text = str(bullets)
 	$TimeToEmpty.text = str("%.3f" % time_to_empty)
+#	$TimeToEmpty.text = str(time_to_empty)
